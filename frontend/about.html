@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>About — PlantAI</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-logo-mark">🌿</div><span class="nav-logo-text">Plant<span>AI</span></span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="plants.html">Plant Care</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="nav-toggle-icon" aria-hidden="true">
+      <span class="nav-toggle-line"></span>
+      <span class="nav-toggle-line"></span>
+      <span class="nav-toggle-line"></span>
+    </span>
+  </button>
+</nav>
+
+<div class="page-hero">
+  <div class="wrap">
+    <span class="page-hero-pill">🌿 Our Story</span>
+    <h1>About PlantAI</h1>
+    <p>Built to help farmers and gardeners protect their crops using the power of artificial intelligence</p>
+  </div>
+</div>
+
+<div class="about-content">
+  <div class="wrap">
+
+    <!-- Intro with image -->
+    <div class="about-intro-grid reveal">
+      <div class="about-intro-text">
+        <span class="section-tag">Our Mission</span>
+        <h2>Making plant disease diagnosis accessible to everyone</h2>
+        <p>PlantAI was built out of a simple observation: farmers and home gardeners often notice something wrong with their plants, but don't know what it is or what to do about it. Expert agronomists are expensive and not always accessible.</p>
+        <p>We built PlantAI to bridge that gap — a free, fast, multilingual AI tool that can identify plant diseases from a single photo and explain treatment in plain, friendly language.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:1.5rem">
+          <a href="index.html" class="btn-primary" style="font-size:14px;padding:11px 22px">Try PlantAI Free</a>
+          <a href="plants.html" class="btn-outline" style="font-size:14px;padding:11px 22px">Plant Care Guide</a>
+        </div>
+      </div>
+      <div class="about-image-box">
+        <div class="about-image-illustration">🌿</div>
+        <div class="about-image-badge">🏆 Final Year Engineering Project</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row reveal">
+      <div class="stats-row-item"><span class="stats-row-num">39</span><span class="stats-row-label">Disease Classes</span><span class="stats-row-note">Trained recognition set</span></div>
+      <div class="stats-row-item"><span class="stats-row-num">9</span><span class="stats-row-label">Plant Species</span><span class="stats-row-note">Common crop coverage</span></div>
+      <div class="stats-row-item"><span class="stats-row-num">Multi</span><span class="stats-row-label">Regional Support</span><span class="stats-row-note">Responses tailored for local users</span></div>
+      <div class="stats-row-item"><span class="stats-row-num">AI</span><span class="stats-row-label">Smart Assistance</span><span class="stats-row-note">Ask follow-up questions instantly</span></div>
+    </div>
+
+    <!-- How it works -->
+    <div class="reveal" style="margin-bottom:1rem">
+      <span class="section-tag">How It Works</span>
+      <h2 class="section-title">From photo to treatment in seconds</h2>
+    </div>
+    <div class="how-steps-about reveal">
+      <div class="how-step-card"><div class="how-step-num">1</div><h3>Upload a Leaf Photo</h3><p>Take a clear close-up of the affected leaf and upload it. Supports JPG, PNG, WEBP up to 10MB.</p></div>
+      <div class="how-step-card"><div class="how-step-num">2</div><h3>AI Analyzes It</h3><p>Our CNN model trained on PlantVillage dataset with 39 disease classes predicts the disease instantly.</p></div>
+      <div class="how-step-card"><div class="how-step-num">3</div><h3>Get Your Diagnosis</h3><p>See disease name, root cause, and cure. Chat with the AI for deeper guidance in your language.</p></div>
+      <div class="how-step-card"><div class="how-step-num">4</div><h3>Export Your Report</h3><p>Receive the PDF report by email or download it locally. Includes your photo, diagnosis, and chat summary.</p></div>
+    </div>
+
+    <!-- Features visual -->
+    <div style="margin-bottom:5rem">
+      <div style="text-align:center;margin-bottom:2rem" class="reveal">
+        <span class="section-tag">Key Features</span>
+        <h2 class="section-title">What makes PlantAI different</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px">
+        <div class="feature-card"><div class="feature-icon">🌐</div><h3 class="feature-title">Multilingual Support</h3><p class="feature-text">Full EN/HI/GU support in chat and PDF exports — designed for real users across Gujarat and India.</p></div>
+        <div class="feature-card"><div class="feature-icon">🎤</div><h3 class="feature-title">Voice Input</h3><p class="feature-text">Farmers can speak their questions instead of typing — in English, Hindi, or Gujarati.</p></div>
+        <div class="feature-card"><div class="feature-icon">📄</div><h3 class="feature-title">PDF + Email Report</h3><p class="feature-text">Professional report with plant image, diagnosis and AI chat — emailed to you automatically.</p></div>
+        <div class="feature-card"><div class="feature-icon">🗄️</div><h3 class="feature-title">Database Backed</h3><p class="feature-text">All user emails and contact form submissions are stored securely in PostgreSQL.</p></div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div style="margin-bottom:4rem" class="reveal">
+      <span class="section-tag">Built With</span>
+      <h2 class="section-title">Technology Stack</h2>
+      <div class="tech-grid">
+        <span class="tech-pill">🧠 TensorFlow / Keras</span>
+        <span class="tech-pill">⚡ FastAPI (Python)</span>
+        <span class="tech-pill">🤖 Groq — Llama 3.3 70B</span>
+        <span class="tech-pill">🖨️ Playwright PDF Engine</span>
+        <span class="tech-pill">🗄️ PostgreSQL</span>
+        <span class="tech-pill">🎤 Web Speech API</span>
+        <span class="tech-pill">🌐 HTML / CSS / Vanilla JS</span>
+        <span class="tech-pill">📊 PlantVillage Dataset</span>
+      </div>
+    </div>
+
+    <!-- Creator Section -->
+    <div class="creator-section reveal">
+      <div class="creator-avatar">👨‍💻</div>
+      <div>
+        <p class="creator-name">Divy Patel</p>
+        <p class="creator-role">Developer & Creator</p>
+        <p class="creator-bio">Final year B.Tech Computer Engineering student from Ahmedabad, Gujarat. Built PlantAI as a final year project combining deep learning, FastAPI backend, multilingual AI, and a polished frontend — all from scratch.</p>
+        <div class="creator-links">
+          <a href="https://github.com/Divy-04/plant-AI" class="creator-link" target="_blank">💻 GitHub Repo</a>
+          <a href="mailto:pdivy945@gmail.com" class="creator-link">📧 Email Me</a>
+          <a href="contact.html" class="creator-link">💬 Get in Touch</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="wrap-wide">
+    <div class="footer-main">
+      <div class="footer-brand"><div class="footer-logo"><div class="footer-logo-mark">🌿</div><span class="footer-logo-text">Plant<span>AI</span></span></div><p class="footer-tagline">AI-powered plant disease detection for farmers and gardeners across India.</p><span class="footer-badge">🎓 Final Year Project · B.Tech CSE</span></div>
+      <div><p class="footer-col-title">Pages</p><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="plants.html">Plant Care Guide</a></li><li><a href="about.html">About PlantAI</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+      <div><p class="footer-col-title">Features</p><ul class="footer-links"><li><a href="index.html">Disease Detection</a></li><li><a href="index.html">AI Chat Assistant</a></li><li><a href="index.html">Voice Input</a></li><li><a href="index.html">PDF Reports</a></li></ul></div>
+      <div><p class="footer-col-title">Contact</p><div class="footer-contact-item"><span class="footer-contact-icon">📧</span><a href="mailto:pdivy945@gmail.com">pdivy945@gmail.com</a></div><div class="footer-contact-item"><span class="footer-contact-icon">📍</span><span>Ahmedabad, Gujarat, India</span></div><div class="footer-contact-item"><span class="footer-contact-icon">💻</span><a href="https://github.com/Divy-04/plant-AI" target="_blank">GitHub Repository</a></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 PlantAI. Built with ❤️ for farmers across India.</span><div class="footer-bottom-links"><a href="about.html">About</a><a href="contact.html">Contact</a><a href="index.html">Diagnose</a></div></div>
+  </div>
+</footer>
+
+<button class="scroll-top-btn" id="scroll-top-btn" type="button" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script>
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.12});
+document.querySelectorAll('.feature-card,.reveal').forEach(el=>observer.observe(el));
+const nav=document.querySelector('nav');
+const navToggle=nav?.querySelector('.nav-toggle');
+const navLinks=nav?.querySelector('.nav-links');
+if(nav&&navToggle&&navLinks){
+  const syncNavState=(isOpen)=>{
+    nav.classList.toggle('nav-open',isOpen);
+    navToggle.setAttribute('aria-expanded',String(isOpen));
+  };
+  navToggle.addEventListener('click',()=>{
+    syncNavState(!nav.classList.contains('nav-open'));
+  });
+  navLinks.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{
+    syncNavState(false);
+  }));
+  window.addEventListener('resize',()=>{
+    if(window.innerWidth>768){
+      syncNavState(false);
+    }
+  });
+}
+const scrollTopBtn=document.getElementById('scroll-top-btn');
+const toggleScrollTopBtn=()=>{
+  if(!scrollTopBtn)return;
+  const scrollable=Math.max(document.documentElement.scrollHeight-window.innerHeight,1);
+  const progress=window.scrollY/scrollable;
+  scrollTopBtn.classList.toggle('visible',window.innerWidth<=768&&progress>=0.4);
+};
+window.addEventListener('scroll',toggleScrollTopBtn,{passive:true});
+window.addEventListener('resize',toggleScrollTopBtn);
+toggleScrollTopBtn();
+</script>
+</body></html>

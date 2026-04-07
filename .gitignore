@@ -1,0 +1,19 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment / secrets
+.env
+
+*.bak
+
+*.ttf
+# Debug scripts
+debug_model.py
+check_models.py
+
+# OS
+.DS_Store
+Thumbs.db

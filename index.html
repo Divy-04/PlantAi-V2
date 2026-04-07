@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PlantAI — Plant Disease Detection</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ── Nav ──────────────────────────────────────────────── -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-leaf">🌿</div>
+    <span class="nav-logo-text">Plant<span>AI</span></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag">AI-Powered Diagnosis</div>
+    <h1>Detect Plant Diseases<br/><em>Instantly & Accurately</em></h1>
+    <p>Upload a photo of your plant leaf. Our AI model identifies the disease, explains the cause, and tells you exactly how to treat it.</p>
+
+    <!-- Upload Zone -->
+    <div class="upload-zone" id="drop-zone">
+      <img id="img-preview" src="" alt="Preview" />
+      <div id="drop-hint">
+        <div class="upload-icon">🍃</div>
+        <p class="upload-title">Drop your plant photo here</p>
+        <p class="upload-sub">Supports JPG, PNG, WEBP — max 10MB</p>
+        <button class="btn btn-outline" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+          Browse Files
+        </button>
+      </div>
+    </div>
+
+    <input type="file" id="file-input" accept="image/*" style="display:none;" />
+
+    <!-- Loading -->
+    <div class="loading-bar" id="loading-bar">
+      <div class="loading-bar-fill"></div>
+    </div>
+    <p class="loading-text" id="loading-text">Analyzing your plant leaf...</p>
+
+    <!-- Error -->
+    <div class="error-msg" id="error-msg"></div>
+
+    <!-- Analyze Button -->
+    <div class="analyze-wrap" id="analyze-wrap">
+      <button class="btn btn-primary" onclick="analyzeImage()">
+        <span>🔬</span> Analyze Disease
+      </button>
+    </div>
+
+    <!-- Try Again -->
+    <div class="try-again-wrap" id="try-again-wrap">
+      <button class="btn btn-outline" onclick="resetAll()">← Try Another Image</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── Results ───────────────────────────────────────────── -->
+<section id="results-section" style="display:none;">
+  <div class="container">
+    <div class="results-header">
+      <h2>Diagnosis Complete</h2>
+      <p>Here's what we found about your plant</p>
+    </div>
+    <div class="results-grid">
+      <div class="result-card card-disease">
+        <div class="card-icon">🔬</div>
+        <p class="card-label">Detected Disease</p>
+        <p class="card-value" id="result-name">—</p>
+        <span class="confidence-badge" id="result-confidence"></span>
+      </div>
+      <div class="result-card card-cause">
+        <div class="card-icon">⚠️</div>
+        <p class="card-label">What Causes It</p>
+        <p class="card-value">Root Cause</p>
+        <p class="card-body" id="result-cause">—</p>
+      </div>
+      <div class="result-card card-cure">
+        <div class="card-icon">💊</div>
+        <p class="card-label">How to Treat It</p>
+        <p class="card-value">Recommended Cure</p>
+        <p class="card-body" id="result-cure">—</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Chat Section ──────────────────────────────────────── -->
+<section id="chat-section" style="display:none;">
+  <div class="container">
+    <div class="chat-card">
+
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="chat-avatar">🤖</div>
+          <div>
+            <p class="chat-title">Ask PlantAI Assistant</p>
+            <p class="chat-subtitle">Ask anything about this disease — Gemini AI will answer</p>
+          </div>
+        </div>
+        <!-- Language Selector -->
+        <select id="lang-select" class="lang-select" onchange="switchLanguage()">
+          <option value="en">🇬🇧 English</option>
+          <option value="hi">🇮🇳 Hindi</option>
+          <option value="gu">🇮🇳 Gujarati</option>
+        </select>
+      </div>
+
+      <!-- Messages -->
+      <div class="chat-messages" id="chat-messages"></div>
+
+      <!-- Input -->
+      <div class="chat-input-row">
+        <input
+          type="text"
+          id="chat-input"
+          class="chat-input"
+          placeholder="Ask about symptoms, treatment, prevention..."
+          onkeydown="if(event.key==='Enter') sendMessage()"
+        />
+        <button class="btn btn-primary chat-send-btn" onclick="sendMessage()">Send →</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ────────────────────────────────────────────── -->
+<footer>
+  <strong>PlantAI</strong> &mdash; Final Year Project &mdash; AI-Powered Plant Disease Detection
+</footer>
+
+<script>
+  const API       = 'http://localhost:8000';
+  let hasFile     = false;
+  let sessionId   = null;
+  let currentLang = 'en';
+  let currentData = null;  // stores { name, cause, cure } for chat context
+
+  // ── Upload Setup ───────────────────────────────────────
+  const dropZone  = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+
+  dropZone.addEventListener('click', () => { if (!hasFile) fileInput.click(); });
+  fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragging'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragging'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('dragging');
+    const f = e.dataTransfer.files[0];
+    if (f) { fileInput.files = e.dataTransfer.files; handleFile(f); }
+  });
+
+  function handleFile(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('img-preview').src = e.target.result;
+      document.getElementById('img-preview').style.display = 'block';
+      document.getElementById('drop-hint').style.display = 'none';
+      hasFile = true;
+      document.getElementById('analyze-wrap').style.display = 'block';
+      document.getElementById('results-section').style.display = 'none';
+      document.getElementById('chat-section').style.display = 'none';
+      document.getElementById('error-msg').style.display = 'none';
+      document.getElementById('try-again-wrap').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Analyze ────────────────────────────────────────────
+  async function analyzeImage() {
+    if (!fileInput.files[0]) return;
+
+    document.getElementById('analyze-wrap').style.display = 'none';
+    document.getElementById('loading-bar').style.display = 'block';
+    document.getElementById('loading-text').style.display = 'block';
+    document.getElementById('results-section').style.display = 'none';
+    document.getElementById('chat-section').style.display = 'none';
+    document.getElementById('error-msg').style.display = 'none';
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    try {
+      const res  = await fetch(`${API}/predict`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Prediction failed');
+
+      currentData = data;
+      showResults(data);
+      await startChatSession(data);
+
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      document.getElementById('loading-bar').style.display = 'none';
+      document.getElementById('loading-text').style.display = 'none';
+    }
+  }
+
+  function showResults(data) {
+    const parts   = (data.name || '').split('___');
+    const plant   = parts[0]?.replace(/_/g, ' ') || '';
+    const disease = parts[1]?.replace(/_/g, ' ') || data.name.replace(/_/g, ' ');
+    const display = parts.length > 1 ? `${plant} — ${disease}` : disease;
+
+    document.getElementById('result-name').textContent       = display;
+    document.getElementById('result-cause').textContent      = data.cause || '—';
+    document.getElementById('result-cure').textContent       = data.cure  || '—';
+    document.getElementById('result-confidence').textContent = `${data.confidence}% confidence`;
+
+    // Re-trigger card animations
+    document.querySelectorAll('.result-card').forEach(c => {
+      c.style.animation = 'none'; c.offsetHeight; c.style.animation = '';
+    });
+
+    document.getElementById('results-section').style.display = 'block';
+    document.getElementById('try-again-wrap').style.display = 'block';
+    document.getElementById('results-section').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Chat Session ───────────────────────────────────────
+  async function startChatSession(data) {
+    try {
+      const res = await fetch(`${API}/start-chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          disease:  data.name,
+          cause:    data.cause,
+          cure:     data.cure,
+          language: currentLang
+        })
+      });
+      const result = await res.json();
+      sessionId = result.session_id;
+
+      // Show chat UI
+      document.getElementById('chat-section').style.display = 'block';
+      document.getElementById('chat-messages').innerHTML = '';
+
+      // Auto-send first message so AI greets the user
+      const firstMsg = {
+        en: `I detected "${formatName(data.name)}" in my plant. Can you explain this disease, its symptoms, and how I can treat it?`,
+        hi: `मेरे पौधे में "${formatName(data.name)}" मिला। कृपया इस बीमारी, इसके लक्षण और उपचार बताएं।`,
+        gu: `મારા છોડમાં "${formatName(data.name)}" મળ્યો. કૃપા કરી આ રોગ, ચિહ્નો અને ઉપચાર સમજાવો.`
+      };
+      await sendMessage(firstMsg[currentLang] || firstMsg['en'], true);
+
+      document.getElementById('chat-section').scrollIntoView({ behavior: 'smooth' });
+    } catch (err) {
+      console.error('Could not start chat session:', err);
+    }
+  }
+
+  // ── Send Message ───────────────────────────────────────
+  async function sendMessage(overrideText, isAuto = false) {
+    if (!sessionId) return;
+
+    const input = document.getElementById('chat-input');
+    const text  = overrideText || input.value.trim();
+    if (!text) return;
+
+    if (!isAuto) {
+      appendBubble('user', text);
+      input.value = '';
+    }
+
+    const typing = appendTyping();
+
+    try {
+      const res = await fetch(`${API}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: sessionId,
+          message:    text,
+          language:   currentLang
+        })
+      });
+      const data = await res.json();
+      typing.remove();
+      if (!res.ok) throw new Error(data.detail || 'Chat failed');
+      appendBubble('ai', data.reply);
+    } catch (err) {
+      typing.remove();
+      appendBubble('ai', '⚠️ Sorry, I couldn\'t get a response. Please try again.');
+    }
+  }
+
+  function appendBubble(role, text) {
+    const box = document.getElementById('chat-messages');
+    const msg = document.createElement('div');
+    msg.className = `chat-bubble-wrap ${role}`;
+    msg.innerHTML = `<div class="chat-bubble">${text.replace(/\n/g, '<br/>')}</div>`;
+    box.appendChild(msg);
+    box.scrollTop = box.scrollHeight;
+    return msg;
+  }
+
+  function appendTyping() {
+    const box = document.getElementById('chat-messages');
+    const msg = document.createElement('div');
+    msg.className = 'chat-bubble-wrap ai';
+    msg.innerHTML = `<div class="chat-bubble typing"><span></span><span></span><span></span></div>`;
+    box.appendChild(msg);
+    box.scrollTop = box.scrollHeight;
+    return msg;
+  }
+
+  function switchLanguage() {
+    currentLang = document.getElementById('lang-select').value;
+  }
+
+  // ── Helpers ────────────────────────────────────────────
+  function formatName(raw) {
+    const parts = (raw || '').split('___');
+    if (parts.length > 1) return `${parts[0].replace(/_/g,' ')} — ${parts[1].replace(/_/g,' ')}`;
+    return raw.replace(/_/g, ' ');
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = '⚠️ ' + msg;
+    el.style.display = 'block';
+    document.getElementById('analyze-wrap').style.display = 'block';
+  }
+
+  function resetAll() {
+    hasFile = false; sessionId = null; currentData = null;
+    fileInput.value = '';
+    document.getElementById('img-preview').style.display = 'none';
+    document.getElementById('drop-hint').style.display = 'block';
+    document.getElementById('analyze-wrap').style.display = 'none';
+    document.getElementById('results-section').style.display = 'none';
+    document.getElementById('chat-section').style.display = 'none';
+    document.getElementById('try-again-wrap').style.display = 'none';
+    document.getElementById('error-msg').style.display = 'none';
+    document.getElementById('chat-messages').innerHTML = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

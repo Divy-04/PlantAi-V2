@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Plant Care Guide — PlantAI</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-logo-mark">🌿</div><span class="nav-logo-text">Plant<span>AI</span></span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="plants.html" class="active">Plant Care</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="nav-toggle-icon" aria-hidden="true">
+      <span class="nav-toggle-line"></span>
+      <span class="nav-toggle-line"></span>
+      <span class="nav-toggle-line"></span>
+    </span>
+  </button>
+</nav>
+
+<div class="page-hero">
+  <div class="wrap">
+    <span class="page-hero-pill">🌱 Complete Guide</span>
+    <h1>Plant Care Guide</h1>
+    <p>Everything a healthy plant needs — from water and sunlight to soil and seasonal care. Learn the fundamentals that keep any plant thriving.</p>
+  </div>
+</div>
+
+<div class="plants-content">
+  <div class="wrap">
+
+    <!-- Intro -->
+    <div class="plants-intro reveal">
+      <h2>The Foundation of Healthy Plants</h2>
+      <p>Every thriving plant — whether a tomato in your garden or an apple tree in an orchard — relies on the same core principles. Master these and you'll prevent most diseases before they even start.</p>
+    </div>
+
+    <!-- Section 1: Core Needs -->
+    <div style="margin-bottom:1rem" class="reveal">
+      <span class="section-tag">Core Requirements</span>
+      <h2 class="section-title" style="margin-bottom:.5rem">What every healthy plant needs</h2>
+      <p class="section-sub">These 6 essentials apply to virtually every plant species. Get them right and your plants will flourish.</p>
+    </div>
+    <div class="needs-grid">
+      <div class="need-card"><div class="need-icon">💧</div><h3 class="need-title">Water</h3><p class="need-text">The right amount at the right time. Most plants prefer deep, infrequent watering over frequent shallow watering — it encourages deeper root growth.</p></div>
+      <div class="need-card"><div class="need-icon">☀️</div><h3 class="need-title">Sunlight</h3><p class="need-text">Light drives photosynthesis. Know your plant's needs — full sun (6+ hrs), partial shade (3–6 hrs), or shade. Wrong light causes weak, leggy growth.</p></div>
+      <div class="need-card"><div class="need-icon">🪨</div><h3 class="need-title">Soil Quality</h3><p class="need-text">Healthy soil is alive. It needs the right pH, good drainage, organic matter, and billions of beneficial microbes to support plant roots.</p></div>
+      <div class="need-card"><div class="need-icon">🌡️</div><h3 class="need-title">Temperature</h3><p class="need-text">Most plants have a preferred temperature range. Frost kills tropical plants; excessive heat stresses cool-season crops. Know your climate zone.</p></div>
+      <div class="need-card"><div class="need-icon">💨</div><h3 class="need-title">Air Circulation</h3><p class="need-text">Good airflow prevents fungal diseases, strengthens stems, and ensures CO₂ reaches leaves. Overcrowded plants are the #1 cause of disease outbreaks.</p></div>
+      <div class="need-card"><div class="need-icon">🧪</div><h3 class="need-title">Nutrients</h3><p class="need-text">Plants need NPK — Nitrogen for leaves, Phosphorus for roots and fruit, Potassium for overall health. Deficiencies show up as yellowing or poor yield.</p></div>
+    </div>
+
+    <!-- Section 2: Watering Guide (Accordion) -->
+    <div class="accordion-section reveal">
+      <div class="accordion-header-row">
+        <div class="need-icon" style="font-size:28px">💧</div>
+        <h2 class="accordion-section-title">Watering — The Most Common Mistake</h2>
+      </div>
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">❓</span><span class="accordion-q">How often should I water my plants?</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>There is no single answer — it depends on the plant, pot size, soil type, humidity, and season. The best method is the "finger test": push your finger 2cm into the soil. If it's dry, water deeply. If it's still moist, wait.</p>
+            <p>General guidelines by plant type:</p>
+            <ul>
+              <li>🍅 Vegetables (tomato, pepper): Every 2–3 days in summer, deeply</li>
+              <li>🌳 Fruit trees: Every 7–10 days when established</li>
+              <li>🌵 Succulents / cacti: Every 2–3 weeks, let soil dry completely</li>
+              <li>🌿 Herbs: When the top 1cm of soil is dry, usually every 1–2 days</li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">⏰</span><span class="accordion-q">When is the best time of day to water?</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>Early morning (6–9 AM) is ideal. The water reaches roots before the heat of the day causes evaporation, and leaves dry out before evening — reducing fungal disease risk.</p>
+            <p>Avoid evening watering — wet leaves overnight create perfect conditions for fungal infections like powdery mildew and early blight.</p>
+            <ul>
+              <li>✅ Best: Early morning before 9 AM</li>
+              <li>⚠️ Acceptable: Late evening if morning isn't possible</li>
+              <li>❌ Avoid: Midday watering (high evaporation, leaf scorch risk)</li>
+              <li>❌ Avoid: Overhead watering on foliage — water at the base</li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">🚨</span><span class="accordion-q">Signs of overwatering vs underwatering</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>Both overwatering and underwatering cause wilting — but for different reasons. Here's how to tell them apart:</p>
+            <ul>
+              <li>💧 Overwatering: Yellow leaves, mushy stems, root rot smell, soggy soil, mold on soil surface</li>
+              <li>☀️ Underwatering: Dry crispy leaf edges, soil pulling away from pot edges, leaves feel thin and papery</li>
+              <li>🔍 Test: Stick finger 2cm into soil — wet = overwatered, bone dry = underwatered</li>
+              <li>💡 Tip: Most house plants die from overwatering, not underwatering</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Disease Prevention (Accordion) -->
+    <div class="accordion-section reveal">
+      <div class="accordion-header-row">
+        <div class="need-icon" style="font-size:28px">🛡️</div>
+        <h2 class="accordion-section-title">Disease Prevention & Early Detection</h2>
+      </div>
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">👁️</span><span class="accordion-q">How to inspect your plants for early disease signs</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>Early detection is the most powerful tool against plant disease. Check your plants at least twice a week, especially during warm and humid weather.</p>
+            <ul>
+              <li>🔍 Flip leaves over — most pests and fungal spores start on the underside</li>
+              <li>🟡 Yellow spots or rings on leaves often indicate fungal or viral infection</li>
+              <li>⬛ Dark lesions or water-soaked spots suggest bacterial disease</li>
+              <li>🕸️ Fine webbing on leaves = spider mite infestation</li>
+              <li>⬜ White powdery coating = powdery mildew fungus</li>
+              <li>📷 Take a photo and use PlantAI to identify it instantly</li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">🌿</span><span class="accordion-q">Natural and organic disease prevention methods</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>Chemical fungicides work, but preventing disease naturally is better for your soil, beneficial insects, and the environment.</p>
+            <ul>
+              <li>🧄 Neem oil spray — broad-spectrum antifungal and insecticide, apply every 7–14 days</li>
+              <li>🥛 Baking soda solution (1 tsp/liter water) — effective against powdery mildew</li>
+              <li>🫙 Compost tea spray — introduces beneficial microbes that outcompete pathogens</li>
+              <li>🌻 Companion planting — basil near tomatoes reduces aphids and repels certain fungi</li>
+              <li>✂️ Prune infected leaves immediately and dispose — never compost diseased material</li>
+              <li>🔄 Crop rotation — never plant the same family in the same spot 2 years in a row</li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">🧪</span><span class="accordion-q">When to use chemical fungicides and how to apply them safely</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>Chemical fungicides should be a last resort — when natural methods haven't worked and the disease is spreading fast. Always read the label.</p>
+            <ul>
+              <li>⏱️ Apply early in the disease cycle — fungicides prevent spread, not cure existing damage</li>
+              <li>🧴 Copper-based fungicides are effective for both fungal and bacterial diseases</li>
+              <li>🌅 Apply in the evening or morning — never in midday heat or strong sun</li>
+              <li>🧤 Always wear gloves and avoid inhaling spray mist</li>
+              <li>🐝 Avoid spraying on open flowers — protects pollinators</li>
+              <li>📅 Rotate between different fungicide types to prevent resistance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Soil & Nutrition (Accordion) -->
+    <div class="accordion-section reveal">
+      <div class="accordion-header-row">
+        <div class="need-icon" style="font-size:28px">🪨</div>
+        <h2 class="accordion-section-title">Soil Health & Nutrition</h2>
+      </div>
+      <div class="accordion">
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">📊</span><span class="accordion-q">Understanding soil pH and why it matters</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>Soil pH (0–14 scale) determines how well plants absorb nutrients. Even if your soil has plenty of nutrients, wrong pH "locks" them out and causes deficiency symptoms.</p>
+            <ul>
+              <li>🍅 Tomato, pepper, corn: pH 6.0–6.8 (slightly acidic)</li>
+              <li>🫐 Blueberries: pH 4.5–5.5 (very acidic)</li>
+              <li>🌹 Most vegetables: pH 6.0–7.0</li>
+              <li>🧪 Test your soil with a cheap pH meter or test kit</li>
+              <li>⬆️ Raise pH (too acidic): add garden lime</li>
+              <li>⬇️ Lower pH (too alkaline): add sulfur or peat moss</li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">🌾</span><span class="accordion-q">Composting — building the best soil for free</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>Compost is the single best thing you can add to your garden soil. It improves drainage in clay soils, water retention in sandy soils, and feeds billions of beneficial organisms.</p>
+            <ul>
+              <li>♻️ What to compost: vegetable scraps, eggshells, coffee grounds, dry leaves, grass clippings</li>
+              <li>🚫 Never compost: diseased plants, meat, dairy, pet waste, oily foods</li>
+              <li>💧 Keep compost moist but not soggy — like a wrung-out sponge</li>
+              <li>🔄 Turn it every 2 weeks to speed up decomposition</li>
+              <li>✅ Ready when it's dark, crumbly, and smells earthy — takes 2–6 months</li>
+              <li>📏 Apply 5–8cm layer around plants each growing season</li>
+            </ul>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <button class="accordion-trigger" onclick="toggleAccordion(this)">
+            <div class="accordion-trigger-left"><span class="accordion-emoji">🌱</span><span class="accordion-q">Signs of nutrient deficiency in plants</span></div>
+            <span class="accordion-chevron">▼</span>
+          </button>
+          <div class="accordion-body">
+            <p>Plants show clear symptoms when they're missing key nutrients. Learn to read these signs before they become serious.</p>
+            <ul>
+              <li>🟡 Yellow older leaves, slow growth = Nitrogen deficiency (add compost or balanced fertilizer)</li>
+              <li>🟣 Purple undersides of leaves = Phosphorus deficiency (add bone meal)</li>
+              <li>🟤 Brown leaf edges, weak stems = Potassium deficiency (add wood ash or potash)</li>
+              <li>🟡 Yellow between green veins on young leaves = Iron deficiency (add chelated iron)</li>
+              <li>⬜ Pale new growth = Magnesium deficiency (add Epsom salt spray)</li>
+              <li>🔍 Always test soil before adding nutrients to avoid over-fertilizing</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: Seasonal Calendar -->
+    <div class="reveal" style="margin-bottom:4rem">
+      <span class="section-tag">Seasonal Care</span>
+      <h2 class="section-title" style="margin-bottom:1.5rem">What to do each season</h2>
+      <div class="season-grid">
+        <div class="season-card">
+          <div class="season-icon">🌸</div>
+          <div class="season-name">Spring</div>
+          <ul class="season-tasks">
+            <li>Prepare and amend soil</li>
+            <li>Start seeds indoors</li>
+            <li>Apply compost</li>
+            <li>Prune dead branches</li>
+            <li>Begin pest monitoring</li>
+          </ul>
+        </div>
+        <div class="season-card">
+          <div class="season-icon">☀️</div>
+          <div class="season-name">Summer</div>
+          <ul class="season-tasks">
+            <li>Water deeply & regularly</li>
+            <li>Mulch to retain moisture</li>
+            <li>Monitor for disease</li>
+            <li>Fertilize actively</li>
+            <li>Harvest frequently</li>
+          </ul>
+        </div>
+        <div class="season-card">
+          <div class="season-icon">🍂</div>
+          <div class="season-name">Autumn</div>
+          <ul class="season-tasks">
+            <li>Clear diseased plant debris</li>
+            <li>Plant cover crops</li>
+            <li>Add compost to beds</li>
+            <li>Collect and store seeds</li>
+            <li>Protect perennials</li>
+          </ul>
+        </div>
+        <div class="season-card">
+          <div class="season-icon">❄️</div>
+          <div class="season-name">Winter</div>
+          <ul class="season-tasks">
+            <li>Plan next year's layout</li>
+            <li>Maintain tools</li>
+            <li>Start compost pile</li>
+            <li>Prune dormant trees</li>
+            <li>Order seeds early</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-strip reveal">
+      <h2>Think your plant might be sick?</h2>
+      <p>Upload a photo and let our AI diagnose it in seconds — free, fast, and accurate.</p>
+      <a href="index.html" class="btn-cta-white">🔬 Diagnose My Plant</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="wrap-wide">
+    <div class="footer-main">
+      <div class="footer-brand"><div class="footer-logo"><div class="footer-logo-mark">🌿</div><span class="footer-logo-text">Plant<span>AI</span></span></div><p class="footer-tagline">AI-powered plant disease detection for farmers and gardeners across India.</p><span class="footer-badge">🎓 Final Year Project · B.Tech CSE</span></div>
+      <div><p class="footer-col-title">Pages</p><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="plants.html">Plant Care Guide</a></li><li><a href="about.html">About PlantAI</a></li><li><a href="contact.html">Contact Us</a></li></ul></div>
+      <div><p class="footer-col-title">Features</p><ul class="footer-links"><li><a href="index.html">Disease Detection</a></li><li><a href="index.html">AI Chat Assistant</a></li><li><a href="index.html">Voice Input</a></li><li><a href="index.html">PDF Reports</a></li></ul></div>
+      <div><p class="footer-col-title">Contact</p><div class="footer-contact-item"><span class="footer-contact-icon">📧</span><a href="mailto:pdivy945@gmail.com">pdivy945@gmail.com</a></div><div class="footer-contact-item"><span class="footer-contact-icon">📍</span><span>Ahmedabad, Gujarat, India</span></div><div class="footer-contact-item"><span class="footer-contact-icon">💻</span><a href="https://github.com/Divy-04/plant-AI" target="_blank">GitHub Repository</a></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 PlantAI. Built with ❤️ for farmers across India.</span><div class="footer-bottom-links"><a href="about.html">About</a><a href="contact.html">Contact</a><a href="index.html">Diagnose</a></div></div>
+  </div>
+</footer>
+
+<button class="scroll-top-btn" id="scroll-top-btn" type="button" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script>
+function toggleAccordion(btn){
+  const body=btn.nextElementSibling;
+  const isOpen=btn.classList.contains('open');
+  document.querySelectorAll('.accordion-trigger.open').forEach(b=>{b.classList.remove('open');b.nextElementSibling.classList.remove('open')});
+  if(!isOpen){btn.classList.add('open');body.classList.add('open')}
+}
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.12});
+document.querySelectorAll('.need-card,.reveal').forEach(el=>observer.observe(el));
+const nav=document.querySelector('nav');
+const navToggle=nav?.querySelector('.nav-toggle');
+const navLinks=nav?.querySelector('.nav-links');
+if(nav&&navToggle&&navLinks){
+  const syncNavState=(isOpen)=>{
+    nav.classList.toggle('nav-open',isOpen);
+    navToggle.setAttribute('aria-expanded',String(isOpen));
+  };
+  navToggle.addEventListener('click',()=>{
+    syncNavState(!nav.classList.contains('nav-open'));
+  });
+  navLinks.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{
+    syncNavState(false);
+  }));
+  window.addEventListener('resize',()=>{
+    if(window.innerWidth>768){
+      syncNavState(false);
+    }
+  });
+}
+const scrollTopBtn=document.getElementById('scroll-top-btn');
+const toggleScrollTopBtn=()=>{
+  if(!scrollTopBtn)return;
+  const scrollable=Math.max(document.documentElement.scrollHeight-window.innerHeight,1);
+  const progress=window.scrollY/scrollable;
+  scrollTopBtn.classList.toggle('visible',window.innerWidth<=768&&progress>=0.4);
+};
+window.addEventListener('scroll',toggleScrollTopBtn,{passive:true});
+window.addEventListener('resize',toggleScrollTopBtn);
+toggleScrollTopBtn();
+</script>
+</body></html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>PlantAI — AI Plant Disease Detection</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-logo-mark">🌿</div><span class="nav-logo-text">Plant<span>AI</span></span></a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="plants.html">Plant Care</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+    <span class="nav-toggle-icon" aria-hidden="true">
+      <span class="nav-toggle-line"></span>
+      <span class="nav-toggle-line"></span>
+      <span class="nav-toggle-line"></span>
+    </span>
+  </button>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-pill"><span class="dot-live"></span>AI-Powered Diagnosis</div>
+    <h1>Detect Plant Diseases<br/><em>Instantly & Accurately</em></h1>
+    <p class="hero-sub">Upload a photo of any plant leaf. Our deep learning model identifies the disease, explains the cause, and guides you through treatment — in your language.</p>
+
+    <div class="upload-outer">
+      <div class="upload-zone" id="drop-zone">
+        <img id="img-preview" src="" alt=""/>
+        <div id="drop-hint">
+          <div class="upload-ring">📷</div>
+          <p class="upload-h">Drop your plant photo here</p>
+          <p class="upload-s">JPG, PNG, WEBP &middot; max 10MB</p>
+          <button class="btn-browse" onclick="event.stopPropagation();document.getElementById('file-input').click()">Browse Files</button>
+        </div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" style="display:none"/>
+      <div class="loading-wrap" id="loading-bar"><div class="loading-track"><div class="loading-fill"></div></div><p class="loading-label">Analyzing your plant leaf...</p></div>
+      <div class="error-msg" id="error-msg"></div>
+      <div class="analyze-wrap" id="analyze-wrap"><button class="btn-primary" onclick="analyzeImage()">🔬 Analyze Disease</button></div>
+    </div>
+    <div class="try-again-wrap" id="try-again-wrap"><button class="btn-ghost" onclick="resetAll()">← Try Another Image</button></div>
+
+    <div class="analysis-shell" id="analysis-shell">
+      <section id="results-section">
+        <div class="results-head"><h2>Diagnosis Complete</h2><p>Here's what our AI found about your plant</p></div>
+        <div class="healthy-banner" id="healthy-banner">
+          <div class="healthy-icon">✅</div>
+          <div><p class="healthy-title">Your plant looks healthy!</p><p class="healthy-sub">No disease detected. For best results upload a close-up of a single leaf with good lighting.</p></div>
+        </div>
+        <div id="disease-cards">
+          <div class="cards-grid">
+            <div class="result-card card-disease"><div class="card-icon-box">🔬</div><p class="c-label">Disease</p><p class="c-value" id="result-name">—</p><span class="conf-badge" id="result-confidence"></span></div>
+            <div class="result-card card-cause"><div class="card-icon-box">⚠️</div><p class="c-label">Cause</p><p class="c-body" id="result-cause">—</p></div>
+            <div class="result-card card-cure"><div class="card-icon-box">💊</div><p class="c-label">Cure</p><p class="c-body" id="result-cure">—</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="chat-section">
+        <div class="chat-shell">
+          <div class="chat-top">
+            <div class="chat-top-left"><div class="chat-av">🤖</div><div><p class="chat-ttl">PlantAI Assistant</p><p class="chat-sub"></p></div></div>
+            <div class="chat-top-right">
+              <select id="lang-select" class="lang-select" onchange="switchLanguage()"><option value="en">🇬🇧 English</option><option value="hi">🇮🇳 Hindi</option><option value="gu">🇮🇳 Gujarati</option></select>
+              <button class="btn-report" onclick="openReportModal()">📄 Get Report</button>
+            </div>
+          </div>
+          <div class="chat-workspace">
+            <div class="chat-main">
+              <div class="chat-prompt-row">
+                <button class="chat-chip" onclick="promptAssistant('Explain the symptoms in simple words.')">Symptoms</button>
+                <button class="chat-chip" onclick="promptAssistant('What should I do first to treat this disease?')">First Step</button>
+                <button class="chat-chip" onclick="promptAssistant('How can I prevent this from spreading to other leaves?')">Prevention</button>
+              </div>
+              <div class="chat-messages" id="chat-messages"></div>
+              <div class="chat-input-row">
+                <button class="mic-btn" id="mic-btn" onclick="toggleVoice()">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                </button>
+                <input type="text" id="chat-input" class="chat-input" placeholder="Ask about symptoms, prevention, treatment..." onkeydown="if(event.key==='Enter')sendMessage()"/>
+                <button class="btn-send" onclick="sendMessage()">Send →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-block"><span class="stat-block-num">39</span><span class="stat-block-label">Disease Classes</span><span class="stat-block-note">Trained recognition set</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-block"><span class="stat-block-num">9</span><span class="stat-block-label">Plant Species</span><span class="stat-block-note">Common crop coverage</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-block"><span class="stat-block-num">Multi</span><span class="stat-block-label">Regional Support</span><span class="stat-block-note">Responses tailored for local users</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat-block"><span class="stat-block-num">AI</span><span class="stat-block-label">Smart Assistance</span><span class="stat-block-note">Ask follow-up questions instantly</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features ──────────────────────────────────────────── -->
+<section class="features-section">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:2.5rem">
+      <span class="section-tag">What We Offer</span>
+      <h2 class="section-title">Everything you need to protect your plants</h2>
+      <p class="section-sub">From instant AI diagnosis to multilingual chat — PlantAI gives farmers and gardeners the tools they need.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🔬</div><h3 class="feature-title">Instant Diagnosis</h3><p class="feature-text">Upload a leaf photo and get the disease name, root cause, and recommended cure in seconds using our trained CNN model.</p></div>
+      <div class="feature-card"><div class="feature-icon">🤖</div><h3 class="feature-title">AI Chat Assistant</h3><p class="feature-text">Ask follow-up questions in plain language. Our Groq-powered Llama 3.3 70B assistant remembers your diagnosis and explains in simple terms.</p></div>
+      <div class="feature-card"><div class="feature-icon">🌐</div><h3 class="feature-title">3 Languages</h3><p class="feature-text">Full support for English, Hindi, and Gujarati — both in chat responses and the exported PDF report with proper script rendering.</p></div>
+      <div class="feature-card"><div class="feature-icon">🎤</div><h3 class="feature-title">Voice Input</h3><p class="feature-text">Ask questions by speaking using your browser's microphone. No extra app needed — works in Chrome across all supported languages.</p></div>
+      <div class="feature-card"><div class="feature-icon">📄</div><h3 class="feature-title">PDF Report</h3><p class="feature-text">Get a professional report emailed to you and download it locally. Includes your plant image, diagnosis, and the full Q&A summary.</p></div>
+      <div class="feature-card"><div class="feature-icon">🌱</div><h3 class="feature-title">Plant Care Guide</h3><p class="feature-text">Learn how to keep your plants healthy year-round with our detailed care guides covering watering, sunlight, soil, and disease prevention.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── How It Works ───────────────────────────────────────── -->
+<div class="how-section">
+  <div class="wrap how-inner">
+    <div style="text-align:center;margin-bottom:3rem">
+      <span class="section-tag">How It Works</span>
+      <h2 class="section-title">Simple. Fast. Accurate.</h2>
+    </div>
+    <div class="how-steps">
+      <div class="how-step"><div class="step-circle">1</div><h3>Upload Photo</h3><p>Take a clear close-up of the leaf and upload it</p></div>
+      <div class="how-step"><div class="step-circle">2</div><h3>AI Analyzes</h3><p>Our CNN model predicts the disease in seconds</p></div>
+      <div class="how-step"><div class="step-circle">3</div><h3>Get Diagnosis</h3><p>See the disease, cause, and cure clearly</p></div>
+      <div class="how-step"><div class="step-circle">4</div><h3>Chat & Export</h3><p>Ask the AI anything and download your report</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PDF Modal ──────────────────────────────────────────── -->
+<div class="modal-overlay" id="report-modal">
+  <div class="modal-card">
+    <div id="modal-step1">
+      <div class="modal-icon">📄</div>
+      <h2 class="modal-title">Get Your Report</h2>
+      <p class="modal-sub">Enter your email to receive the full PDF report. You can also download it locally after.</p>
+      <input type="email" id="modal-email" class="modal-input" placeholder="your@email.com"/>
+      <div id="modal-error" class="modal-error"></div>
+      <div class="modal-btns">
+        <button class="btn-modal-send" id="modal-send-btn" onclick="submitReport()"><span id="modal-send-text">Send & Continue →</span><span id="modal-send-spin" style="display:none">Sending...</span></button>
+        <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+    <div id="modal-step2" style="display:none">
+      <div class="modal-success">
+        <div class="modal-success-icon">✅</div>
+        <h3>Report Sent!</h3>
+        <p id="modal-success-msg">Report emailed. Download a local copy below.</p>
+        <button class="btn-dl" onclick="downloadFromBlob()">⬇️ Download PDF</button><br/>
+        <button class="btn-modal-close" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="wrap-wide">
+    <div class="footer-main">
+      <div class="footer-brand">
+        <div class="footer-logo"><div class="footer-logo-mark">🌿</div><span class="footer-logo-text">Plant<span>AI</span></span></div>
+        <p class="footer-tagline">AI-powered plant disease detection for farmers and gardeners across India.</p>
+        <span class="footer-badge">🎓 Final Year Project · B.Tech CSE</span>
+      </div>
+      <div>
+        <p class="footer-col-title">Pages</p>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="plants.html">Plant Care Guide</a></li>
+          <li><a href="about.html">About PlantAI</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Features</p>
+        <ul class="footer-links">
+          <li><a href="index.html">Disease Detection</a></li>
+          <li><a href="index.html">AI Chat Assistant</a></li>
+          <li><a href="index.html">Voice Input</a></li>
+          <li><a href="index.html">PDF Reports</a></li>
+          <li><a href="index.html">Email Reports</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-title">Contact</p>
+        <div class="footer-contact-item"><span class="footer-contact-icon">📧</span><a href="mailto:pdivy945@gmail.com">pdivy945@gmail.com</a></div>
+        <div class="footer-contact-item"><span class="footer-contact-icon">📍</span><span>Ahmedabad, Gujarat, India</span></div>
+        <div class="footer-contact-item"><span class="footer-contact-icon">💻</span><a href="https://github.com/Divy-04/plant-AI" target="_blank">GitHub Repository</a></div>
+        <div class="footer-contact-item"><span class="footer-contact-icon">🌐</span><span>Supported: EN / HI / GU</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 PlantAI. Built with ❤️ for farmers across India.</span>
+      <div class="footer-bottom-links"><a href="about.html">About</a><a href="contact.html">Contact</a><a href="plants.html">Plant Care</a></div>
+    </div>
+  </div>
+</footer>
+
+<button class="scroll-top-btn" id="scroll-top-btn" type="button" aria-label="Scroll to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+<script>
+const API='';
+let hasFile=false,sessionId=null,currentLang='en';
+let isRecording=false,recognition=null,_pdfBlob=null;
+const HEALTHY=['background_without_leaves','healthy'];
+function isHealthy(n){return HEALTHY.some(h=>(n||'').toLowerCase().includes(h))}
+
+// Scroll reveal
+const observer=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible')}})},{threshold:.15});
+document.querySelectorAll('.feature-card,.need-card,.reveal').forEach(el=>observer.observe(el));
+
+const dropZone=document.getElementById('drop-zone');
+const fileInput=document.getElementById('file-input');
+dropZone.addEventListener('click',()=>{if(!hasFile)fileInput.click()});
+fileInput.addEventListener('change',()=>{if(fileInput.files[0])handleFile(fileInput.files[0])});
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragging')});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragging'));
+dropZone.addEventListener('drop',e=>{e.preventDefault();dropZone.classList.remove('dragging');const f=e.dataTransfer.files[0];if(f){fileInput.files=e.dataTransfer.files;handleFile(f)}});
+
+function handleFile(file){
+  const r=new FileReader();
+  r.onload=e=>{
+    document.getElementById('img-preview').src=e.target.result;
+    document.getElementById('img-preview').style.display='block';
+    document.getElementById('drop-hint').style.display='none';
+    hasFile=true;
+    show('analyze-wrap');
+    ['results-section','chat-section','error-msg','try-again-wrap'].forEach(hide);
+  };
+  r.readAsDataURL(file);
+}
+
+async function analyzeImage(){
+  if(!fileInput.files[0])return;
+  hide('analyze-wrap');show('loading-bar');
+  ['results-section','chat-section','error-msg'].forEach(hide);
+  const fd=new FormData();fd.append('file',fileInput.files[0]);
+  try{
+    const res=await fetch(`${API}/predict`,{method:'POST',body:fd});
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.detail||'Prediction failed');
+    showResults(data);await startChat(data);
+  }catch(e){showError(e.message)}
+  finally{hide('loading-bar')}
+}
+
+function showResults(data){
+  const p=(data.name||'').split('___');
+  const display=p.length>1?`${p[0].replace(/_/g,' ')} — ${p[1].replace(/_/g,' ')}`:data.name.replace(/_/g,' ');
+  document.getElementById('analysis-shell').classList.add('has-result');
+  show('results-section');show('try-again-wrap');
+  if(isHealthy(data.name)){
+    showEl('healthy-banner','flex');hide('disease-cards');
+  }else{
+    hide('healthy-banner');show('disease-cards');
+    document.getElementById('result-name').textContent=display;
+    document.getElementById('result-cause').textContent=data.cause||'—';
+    document.getElementById('result-cure').textContent=data.cure||'—';
+    document.getElementById('result-confidence').textContent=`${data.confidence}% confidence`;
+    document.querySelectorAll('.result-card').forEach(c=>{c.style.animation='none';c.offsetHeight;c.style.animation=''});
+  }
+  scrollPostAnalysisIntoView();
+}
+
+async function startChat(data){
+  sessionId=data.session_id;
+  show('chat-section');
+  document.getElementById('chat-messages').innerHTML='';
+  const first={en:`I detected "${fmt(data.name)}" in my plant. Can you explain this disease, symptoms, and treatment?`,hi:`मेरे पौधे में "${fmt(data.name)}" मिला। कृपया इस बीमारी, लक्षण और उपचार बताएं।`,gu:`મારા છોડમાં "${fmt(data.name)}" મળ્યો. કૃપા કરી આ રોગ, ચિહ્નો અને ઉપચાર સમજાવો.`};
+  await sendMessage(first[currentLang]||first.en,true);
+  scrollPostAnalysisIntoView();
+}
+
+async function sendMessage(override,isAuto=false){
+  if(!sessionId)return;
+  const inp=document.getElementById('chat-input');
+  const text=override||inp.value.trim();
+  if(!text)return;
+  if(!isAuto){appendBubble('user',text);inp.value=''}
+  const typing=appendTyping();
+  try{
+    const res=await fetch(`${API}/chat`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sessionId,message:text,language:currentLang})});
+    const data=await res.json();
+    typing.remove();
+    if(!res.ok)throw new Error(data.detail||'Chat failed');
+    appendBubble('ai',data.reply);
+  }catch(e){typing.remove();appendBubble('ai','⚠️ Error: '+e.message)}
+}
+
+function appendBubble(role,text){
+  const box=document.getElementById('chat-messages');
+  const d=document.createElement('div');d.className=`chat-bubble-wrap ${role}`;
+  d.innerHTML=`<div class="chat-bubble">${text.replace(/\n/g,'<br/>')}</div>`;
+  box.appendChild(d);box.scrollTop=box.scrollHeight;return d;
+}
+function appendTyping(){
+  const box=document.getElementById('chat-messages');
+  const d=document.createElement('div');d.className='chat-bubble-wrap ai';
+  d.innerHTML='<div class="chat-bubble typing"><span></span><span></span><span></span></div>';
+  box.appendChild(d);box.scrollTop=box.scrollHeight;return d;
+}
+function promptAssistant(text){sendMessage(text)}
+
+function toggleVoice(){isRecording?stopVoice():startVoice()}
+function startVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert('Voice input requires Google Chrome.');return}
+  recognition=new SR();recognition.lang={en:'en-IN',hi:'hi-IN',gu:'gu-IN'}[currentLang]||'en-IN';recognition.interimResults=false;
+  document.getElementById('mic-btn').classList.add('recording');document.getElementById('chat-input').placeholder='🎤 Listening...';isRecording=true;
+  recognition.onresult=e=>{const t=e.results[0][0].transcript;document.getElementById('chat-input').value=t;stopVoice();sendMessage(t)};
+  recognition.onerror=recognition.onend=()=>stopVoice();recognition.start();
+}
+function stopVoice(){
+  isRecording=false;document.getElementById('mic-btn').classList.remove('recording');
+  document.getElementById('chat-input').placeholder='Ask about symptoms, prevention, treatment...';
+  if(recognition){recognition.stop();recognition=null}
+}
+
+function openReportModal(){
+  if(!sessionId){alert('Please analyze a plant image first.');return}
+  _pdfBlob=null;document.getElementById('modal-email').value='';document.getElementById('modal-error').style.display='none';
+  document.getElementById('modal-step1').style.display='block';document.getElementById('modal-step2').style.display='none';
+  document.getElementById('report-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('report-modal').classList.remove('open')}
+document.getElementById('report-modal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+async function submitReport(){
+  const email=document.getElementById('modal-email').value.trim();
+  const errEl=document.getElementById('modal-error');errEl.style.display='none';
+  if(!email||!email.includes('@')){errEl.textContent='Please enter a valid email address.';errEl.style.display='block';return}
+  const btn=document.getElementById('modal-send-btn');
+  document.getElementById('modal-send-text').style.display='none';document.getElementById('modal-send-spin').style.display='inline';btn.disabled=true;
+  try{
+    const res=await fetch(`${API}/export/email`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:sessionId,to_email:email})});
+    if(!res.ok){const d=await res.json();throw new Error(d.detail||'Failed')}
+    const blob=await res.blob();if(blob.type==='application/pdf')_pdfBlob=blob;
+    document.getElementById('modal-success-msg').textContent=`Report sent to ${email}. Download a local copy below.`;
+    document.getElementById('modal-step1').style.display='none';document.getElementById('modal-step2').style.display='block';
+  }catch(e){errEl.textContent='⚠️ '+e.message;errEl.style.display='block'}
+  finally{document.getElementById('modal-send-text').style.display='inline';document.getElementById('modal-send-spin').style.display='none';btn.disabled=false}
+}
+function downloadFromBlob(){
+  if(!_pdfBlob){fetch(`${API}/export/pdf?session_id=${sessionId}`).then(r=>r.blob()).then(b=>triggerDownload(b));return}
+  triggerDownload(_pdfBlob);
+}
+function triggerDownload(blob){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='plant_disease_report.pdf';a.click();URL.revokeObjectURL(url)}
+
+function switchLanguage(){currentLang=document.getElementById('lang-select').value}
+function fmt(raw){const p=(raw||'').split('___');return p.length>1?`${p[0].replace(/_/g,' ')} — ${p[1].replace(/_/g,' ')}`:raw.replace(/_/g,' ')}
+function scrollSectionIntoView(id,gap=18){
+  const el=document.getElementById(id);
+  const nav=document.querySelector('nav');
+  if(!el)return;
+  const navHeight=nav?nav.offsetHeight:0;
+  const top=el.getBoundingClientRect().top+window.scrollY-navHeight-gap;
+  window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+}
+function scrollPostAnalysisIntoView(){
+  const isMobile=window.innerWidth<=768;
+  scrollSectionIntoView(isMobile?'chat-section':'analysis-shell',isMobile?10:22);
+}
+function show(id){document.getElementById(id).style.display='block'}
+function hide(id){document.getElementById(id).style.display='none'}
+function showEl(id,d='block'){document.getElementById(id).style.display=d}
+function showError(msg){const el=document.getElementById('error-msg');el.textContent='⚠️ '+msg;el.style.display='block';show('analyze-wrap')}
+function resetAll(){
+  hasFile=false;sessionId=null;_pdfBlob=null;fileInput.value='';
+  document.getElementById('analysis-shell').classList.remove('has-result');
+  document.getElementById('img-preview').style.display='none';document.getElementById('drop-hint').style.display='block';
+  ['analyze-wrap','results-section','healthy-banner','disease-cards','chat-section','try-again-wrap','error-msg'].forEach(hide);
+  document.getElementById('chat-messages').innerHTML='';stopVoice();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const nav=document.querySelector('nav');
+const navToggle=nav?.querySelector('.nav-toggle');
+const navLinks=nav?.querySelector('.nav-links');
+if(nav&&navToggle&&navLinks){
+  const syncNavState=(isOpen)=>{
+    nav.classList.toggle('nav-open',isOpen);
+    navToggle.setAttribute('aria-expanded',String(isOpen));
+  };
+  navToggle.addEventListener('click',()=>{
+    syncNavState(!nav.classList.contains('nav-open'));
+  });
+  navLinks.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{
+    syncNavState(false);
+  }));
+  window.addEventListener('resize',()=>{
+    if(window.innerWidth>768){
+      syncNavState(false);
+    }
+  });
+}
+const scrollTopBtn=document.getElementById('scroll-top-btn');
+const toggleScrollTopBtn=()=>{
+  if(!scrollTopBtn)return;
+  const scrollable=Math.max(document.documentElement.scrollHeight-window.innerHeight,1);
+  const progress=window.scrollY/scrollable;
+  scrollTopBtn.classList.toggle('visible',window.innerWidth<=768&&progress>=0.4);
+};
+window.addEventListener('scroll',toggleScrollTopBtn,{passive:true});
+window.addEventListener('resize',toggleScrollTopBtn);
+toggleScrollTopBtn();
+</script>
+</body></html>
