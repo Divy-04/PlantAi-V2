@@ -23,8 +23,8 @@ RUN playwright install-deps chromium
 # Copy entire project
 COPY . .
 
-# Fail the image build early if the ML model was not included in the build context.
-RUN test -f /app/models/plant_disease_recog_model_pwp.keras
+# If a model file is present during build, verify it is a real .keras zip and not a Git LFS pointer.
+RUN python -c "from pathlib import Path; import sys; p=Path('/app/models/plant_disease_recog_model_pwp.keras'); data=p.read_bytes()[:64] if p.exists() else b''; is_zip=data[:4]==b'PK\\x03\\x04'; is_lfs=data.startswith(b'version https://git-lfs.github.com/spec/v1'); print('Model not bundled at build time; runtime MODEL_URL/local deploy is expected.' if not p.exists() else 'Bundled model looks valid.' if is_zip else 'Bundled model is a Git LFS pointer, not the real .keras file.'); sys.exit(0 if (not p.exists()) or is_zip else 1)"
 
 EXPOSE 8000
 

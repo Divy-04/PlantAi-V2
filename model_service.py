@@ -2,6 +2,7 @@ import json
 import os
 from pathlib import Path
 import numpy as np
+import requests
 import tensorflow as tf
 from image_utils import preprocess_image_variants, set_image_size
 import plantnet_service
@@ -14,6 +15,7 @@ MODEL_PATH = Path(
     )
 )
 JSON_PATH = BASE_DIR / "plant_disease.json"
+MODEL_URL = os.getenv("MODEL_URL", "").strip()
 BACKGROUND_CLASS_NAME = "Background_without_leaves"
 BACKGROUND_REJECT_CONFIDENCE = 85.0
 BACKGROUND_REJECT_MARGIN = 25.0
@@ -21,6 +23,79 @@ BACKGROUND_RESCUE_CONFIDENCE = 35.0
 
 _model   = None
 _classes = []
+
+
+def _read_prefix(path: Path, size: int = 64) -> bytes:
+    with path.open("rb") as f:
+        return f.read(size)
+
+
+def _is_keras_zip(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    return _read_prefix(path, 4) == b"PK\x03\x04"
+
+
+def _is_lfs_pointer(path: Path) -> bool:
+    if not path.is_file():
+        return False
+    return _read_prefix(path).startswith(b"version https://git-lfs.github.com/spec/v1")
+
+
+def _download_model() -> None:
+    if not MODEL_URL:
+        return
+
+    MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    print(f"Downloading model from {MODEL_URL} to {MODEL_PATH}...")
+
+    with requests.get(MODEL_URL, stream=True, timeout=120) as response:
+        response.raise_for_status()
+        with MODEL_PATH.open("wb") as f:
+            for chunk in response.iter_content(chunk_size=1024 * 1024):
+                if chunk:
+                    f.write(chunk)
+
+    print("Model download complete.")
+
+
+def _ensure_model_file() -> None:
+    if _is_keras_zip(MODEL_PATH):
+        return
+
+    if MODEL_PATH.exists():
+        if _is_lfs_pointer(MODEL_PATH):
+            print(
+                "Model file is a Git LFS pointer, not the actual .keras artifact. "
+                "Attempting download via MODEL_URL if configured."
+            )
+        else:
+            print(
+                f"Model file exists at {MODEL_PATH} but does not look like a valid .keras zip. "
+                "Attempting download via MODEL_URL if configured."
+            )
+    else:
+        print(
+            f"Model file not found at {MODEL_PATH}. "
+            "Attempting download via MODEL_URL if configured."
+        )
+
+    _download_model()
+
+    if _is_keras_zip(MODEL_PATH):
+        return
+
+    if _is_lfs_pointer(MODEL_PATH):
+        raise ValueError(
+            f"Model path {MODEL_PATH} contains a Git LFS pointer instead of the real model file. "
+            "If Railway is deploying from GitHub, enable Git LFS objects in GitHub archives, "
+            "deploy with `railway up`, or provide a direct MODEL_URL."
+        )
+
+    raise FileNotFoundError(
+        f"Model file not found or invalid at {MODEL_PATH}. "
+        "Provide the real .keras file locally, deploy with `railway up`, or set MODEL_URL."
+    )
 
 
 def _find_class_index(class_name: str) -> int:
@@ -34,12 +109,7 @@ def load_model():
     global _model, _classes
 
     print(f"Loading model from {MODEL_PATH}...")
-    if not MODEL_PATH.is_file():
-        raise FileNotFoundError(
-            f"Model file not found at {MODEL_PATH}. "
-            "If this is a Railway deploy, make sure the model is included in the Docker build context "
-            "or provide it via MODEL_PATH/download step."
-        )
+    _ensure_model_file()
 
     _model = tf.keras.models.load_model(MODEL_PATH)
 
