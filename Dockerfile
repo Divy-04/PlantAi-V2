@@ -30,8 +30,12 @@ RUN playwright install-deps chromium
 # Copy entire project
 COPY . .
 
-# Emit a build-time warning when the bundled model is only a Git LFS pointer.
-RUN python -c "from pathlib import Path; p=Path('/app/models/plant_disease_recog_model_pwp.keras'); data=p.read_bytes()[:64] if p.exists() else b''; is_zip=data[:4]==b'PK\\x03\\x04'; print('Model not bundled at build time; runtime MODEL_URL/local deploy is expected.' if not p.exists() else 'Bundled model looks valid.' if is_zip else 'WARNING: bundled model is a Git LFS pointer, not the real .keras file.')"
+# Model file (plant_disease_recog_model_pwp.keras) is NOT validated at build
+# time. It is loaded at runtime by model_service.py, which will:
+#   1. Accept a valid local .keras file if present (e.g. mounted volume).
+#   2. Download the model from MODEL_URL if the env var is set.
+#   3. Raise a clear error on startup if neither is available.
+# This avoids build failures when the repo only contains a Git LFS pointer.
 
 EXPOSE 8000
 
