@@ -1,6 +1,6 @@
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0
-tensorflow==2.21.0
+tensorflow-cpu==2.21.0
 keras==3.14.0
 pillow>=10.0.0
 python-multipart>=0.0.9

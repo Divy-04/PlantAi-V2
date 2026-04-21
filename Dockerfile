@@ -1,5 +1,8 @@
 FROM python:3.11-slim
 
+ENV CUDA_VISIBLE_DEVICES=-1
+ENV TF_CPP_MIN_LOG_LEVEL=2
+
 # System dependencies for TensorFlow + Playwright (Chromium)
 RUN apt-get update && apt-get install -y \
     wget curl gcc g++ \
