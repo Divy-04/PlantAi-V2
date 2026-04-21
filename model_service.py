@@ -4,7 +4,6 @@ from pathlib import Path
 import zipfile
 import numpy as np
 import requests
-import tensorflow as tf
 from image_utils import preprocess_image_variants, set_image_size
 import plantnet_service
 
@@ -24,6 +23,15 @@ BACKGROUND_RESCUE_CONFIDENCE = 35.0
 
 _model   = None
 _classes = []
+tf = None
+
+
+def _get_tf():
+    global tf
+    if tf is None:
+        import tensorflow as tensorflow_module
+        tf = tensorflow_module
+    return tf
 
 
 def _read_prefix(path: Path, size: int = 64) -> bytes:
@@ -135,7 +143,8 @@ def load_model():
     print(f"Loading model from {MODEL_PATH}...")
     _ensure_model_file()
 
-    _model = tf.keras.models.load_model(MODEL_PATH)
+    tensorflow = _get_tf()
+    _model = tensorflow.keras.models.load_model(MODEL_PATH)
 
     # ── Read actual input shape from the model ─────────────────────────
     # input_shape is (None, H, W, C) — index 1 and 2 are H and W
