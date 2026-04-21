@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
+import os
 import model_service, session_store, database
 from chat_route    import router as chat_router
 from pdf_route     import router as pdf_router
@@ -9,11 +10,20 @@ from email_route   import router as email_router
 from contact_route import router as contact_router
 from admin_route   import router as admin_router
 
+LOAD_MODEL_ON_STARTUP = os.getenv("LOAD_MODEL_ON_STARTUP", "false").lower() == "true"
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    model_service.load_model()
+    print("App startup: begin")
+    if LOAD_MODEL_ON_STARTUP:
+        print("App startup: eager model load enabled")
+        model_service.load_model()
+    else:
+        print("App startup: model load deferred until first prediction request")
+    print("App startup: initializing database")
     database.init_db()
+    print("App startup: complete")
     yield
 
 

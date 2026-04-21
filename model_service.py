@@ -173,7 +173,8 @@ def predict(image_bytes: bytes) -> dict:
       3. Merge into a single response dict
     """
     if _model is None:
-        raise RuntimeError("Model is not loaded yet.")
+        print("Model not loaded yet; loading on demand.")
+        load_model()
 
     # ── Step 1: PlantNet metadata (soft signal, not a hard gate) ──────
     plant_info = plantnet_service.identify_plant(image_bytes)
