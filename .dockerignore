@@ -5,3 +5,6 @@ __pycache__/
 .git/
 temp_*
 tmp_*
+# Exclude model files — they are Git LFS pointers in the repo and must be
+# provided at runtime via MODEL_URL or a mounted volume.
+models/*.keras
