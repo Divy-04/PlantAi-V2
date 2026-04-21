@@ -2,6 +2,10 @@ FROM python:3.11-slim
 
 ENV CUDA_VISIBLE_DEVICES=-1
 ENV TF_CPP_MIN_LOG_LEVEL=2
+ENV TF_ENABLE_ONEDNN_OPTS=0
+ENV OMP_NUM_THREADS=1
+ENV TF_NUM_INTRAOP_THREADS=1
+ENV TF_NUM_INTEROP_THREADS=1
 
 # System dependencies for TensorFlow + Playwright (Chromium)
 RUN apt-get update && apt-get install -y \

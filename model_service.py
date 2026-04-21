@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+import zipfile
 import numpy as np
 import requests
 import tensorflow as tf
@@ -36,6 +37,21 @@ def _is_keras_zip(path: Path) -> bool:
     return _read_prefix(path, 4) == b"PK\x03\x04"
 
 
+def _is_valid_keras_archive(path: Path) -> bool:
+    if not _is_keras_zip(path):
+        return False
+
+    try:
+        with zipfile.ZipFile(path) as z:
+            names = set(z.namelist())
+            required = {"metadata.json", "config.json", "model.weights.h5"}
+            if not required.issubset(names):
+                return False
+            return z.testzip() is None
+    except zipfile.BadZipFile:
+        return False
+
+
 def _is_lfs_pointer(path: Path) -> bool:
     if not path.is_file():
         return False
@@ -47,20 +63,28 @@ def _download_model() -> None:
         return
 
     MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = MODEL_PATH.with_suffix(f"{MODEL_PATH.suffix}.download")
     print(f"Downloading model from {MODEL_URL} to {MODEL_PATH}...")
 
     with requests.get(MODEL_URL, stream=True, timeout=120) as response:
         response.raise_for_status()
-        with MODEL_PATH.open("wb") as f:
+        with tmp_path.open("wb") as f:
             for chunk in response.iter_content(chunk_size=1024 * 1024):
                 if chunk:
                     f.write(chunk)
 
+    if not _is_valid_keras_archive(tmp_path):
+        tmp_path.unlink(missing_ok=True)
+        raise ValueError(
+            f"Downloaded file from {MODEL_URL} is not a valid .keras archive."
+        )
+
+    tmp_path.replace(MODEL_PATH)
     print("Model download complete.")
 
 
 def _ensure_model_file() -> None:
-    if _is_keras_zip(MODEL_PATH):
+    if _is_valid_keras_archive(MODEL_PATH):
         return
 
     if MODEL_PATH.exists():
