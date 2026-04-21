@@ -23,6 +23,9 @@ RUN playwright install-deps chromium
 # Copy entire project
 COPY . .
 
+# Fail the image build early if the ML model was not included in the build context.
+RUN test -f /app/models/plant_disease_recog_model_pwp.keras
+
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]

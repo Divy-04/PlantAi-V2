@@ -1,11 +1,19 @@
 import json
+import os
+from pathlib import Path
 import numpy as np
 import tensorflow as tf
 from image_utils import preprocess_image_variants, set_image_size
 import plantnet_service
 
-MODEL_PATH = "models/plant_disease_recog_model_pwp.keras"
-JSON_PATH  = "plant_disease.json"
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = Path(
+    os.getenv(
+        "MODEL_PATH",
+        BASE_DIR / "models" / "plant_disease_recog_model_pwp.keras",
+    )
+)
+JSON_PATH = BASE_DIR / "plant_disease.json"
 BACKGROUND_CLASS_NAME = "Background_without_leaves"
 BACKGROUND_REJECT_CONFIDENCE = 85.0
 BACKGROUND_REJECT_MARGIN = 25.0
@@ -25,7 +33,14 @@ def _find_class_index(class_name: str) -> int:
 def load_model():
     global _model, _classes
 
-    print("Loading model...")
+    print(f"Loading model from {MODEL_PATH}...")
+    if not MODEL_PATH.is_file():
+        raise FileNotFoundError(
+            f"Model file not found at {MODEL_PATH}. "
+            "If this is a Railway deploy, make sure the model is included in the Docker build context "
+            "or provide it via MODEL_PATH/download step."
+        )
+
     _model = tf.keras.models.load_model(MODEL_PATH)
 
     # ── Read actual input shape from the model ─────────────────────────
